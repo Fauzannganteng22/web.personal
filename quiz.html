@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seberapa Sayang Dia?</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #ffe0ec, #fcd4ff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .quiz-box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #d63384;
+    }
+
+    .question {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .answers button {
+      background: #ff91c3;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin: 8px 0;
+      width: 100%;
+      max-width: 100%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .answers button:hover {
+      background: #e66aa7;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .result {
+      font-size: 1.4em;
+      color: #b8005d;
+      margin-top: 30px;
+    }
+
+    .wa-share {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      background: #25D366;
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-box">
+    <h1>Seberapa Sayang Dia ke Kamu?</h1>
+    <div id="quiz">
+      <div class="question" id="questionText"></div>
+      <div class="answers" id="answerButtons"></div>
+    </div>
+    <div id="result" class="result hidden"></div>
+    <a id="waShare" class="wa-share hidden" target="_blank">Kirim ke WhatsApp 💬</a>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "Kamu ngilang sehari, dia...",
+        answers: [
+          { text: "Nanya 1x terus nunggu", score: 2 },
+          { text: "Story-nya isinya sindiran random", score: 3 },
+          { text: "Baru sadar pas kamu muncul", score: 1 }
+        ]
+      },
+      {
+        text: "Kamu bilang 'aku pengen es krim', terus...",
+        answers: [
+          { text: "Tiba-tiba ojek dateng", score: 3 },
+          { text: "Dia bilang, 'wah enak tuh'", score: 2 },
+          { text: "Scroll terus seakan tak terjadi apa-apa", score: 1 }
+        ]
+      },
+      {
+        text: "Kamu cerita panjang di chat, reaksinya...",
+        answers: [
+          { text: "Kasih respon per poin, lengkap", score: 3 },
+          { text: "Cuma react 😮 dan bilang ‘parah sih’", score: 2 },
+          { text: "Typing… hilang", score: 1 }
+        ]
+      },
+      {
+        text: "Kamu ulang tahun, dia...",
+        answers: [
+          { text: "Ngucapin jam 23.59 biar beda", score: 2 },
+          { text: "Gak ngucapin, tapi post kamu di story", score: 3 },
+          { text: "‘HBD yaa’ + sticker WA random", score: 1 }
+        ]
+      },
+      {
+        text: "Kamu sedih. Dia:",
+        answers: [
+          { text: "Langsung call, diem tapi nemenin", score: 3 },
+          { text: "Lama typing... tapi cuma 'semangat ya'", score: 2 },
+          { text: "Bilang: 'aku juga capek sih'", score: 1 }
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+    const maxScore = questions.length * 3;
+
+    const questionText = document.getElementById("questionText");
+    const answerButtons = document.getElementById("answerButtons");
+    const resultBox = document.getElementById("result");
+    const waBtn = document.getElementById("waShare");
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      questionText.textContent = q.text;
+      answerButtons.innerHTML = "";
+
+      q.answers.forEach(a => {
+        const btn = document.createElement("button");
+        btn.textContent = a.text;
+        btn.onclick = () => {
+          totalScore += a.score;
+          currentQuestion++;
+          if (currentQuestion < questions.length) {
+            showQuestion();
+          } else {
+            showResult();
+          }
+        };
+        answerButtons.appendChild(btn);
+      });
+    }
+
+    function showResult() {
+      document.getElementById("quiz").classList.add("hidden");
+      resultBox.classList.remove("hidden");
+      waBtn.classList.remove("hidden");
+
+      const percent = Math.round((totalScore / maxScore) * 100);
+      let message = "";
+
+      if (percent >= 85) {
+        message = `❤️ Wah, dia sayang banget sama kamu! (${percent}%)`;
+      } else if (percent >= 60) {
+        message = `😊 Dia cukup sayang, tapi kadang kode-nya error. (${percent}%)`;
+      } else {
+        message = `😕 Ehm... kayaknya kamu perlu update firmware-nya. (${percent}%)`;
+      }
+
+      resultBox.textContent = message;
+      waBtn.href = `https://wa.me/083876885063${encodeURIComponent(message)}`;
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
